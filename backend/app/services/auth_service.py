@@ -49,6 +49,20 @@ class AuthService:
             if "User already registered" in str(e):
                 raise HTTPException(status_code=409, detail="User with this email already exists")
             raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
+        
+    def request_reset_password(self, token: str):
+        try:
+            self.auth_repository.request_reset_password(token)
+            return {"message": "Password reset link has been sent to your email"}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    def update_password(self, token: str, new_password: str):
+        try:
+            self.auth_repository.update_password(token, new_password)
+            return {"message": "Password has been updated successfully"}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
     def logout(self, token: str):
         try:
