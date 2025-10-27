@@ -1,47 +1,20 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, status
+from fastapi.security import HTTPBearer
 from app.services.auth_service import AuthService
-from app.domain.user import User
-from pydantic import BaseModel
+from app.domain.user import UserLogin, Token, UserCreate
 
-class RegisterRequest(BaseModel):
-    email: str
-    password: str
+router = APIRouter(prefix="/auth", tags=["Authentication"])
+security = HTTPBearer()
 
-class LoginRequest(BaseModel):
-    unique_team_code: str
-    password: str
+@router.post("/login", response_model=Token)
+def login(user_login: UserLogin, auth_service: AuthService = Depends(AuthService)):
+    return auth_service.login(user_login)
 
-class LoginResponse(BaseModel):
-    user: User
-    access_token: str
-    refresh_token: str
+@router.post("/register/team-leader", status_code=status.HTTP_201_CREATED)
+def register_team_leader(user_create: UserCreate, auth_service: AuthService = Depends(AuthService)):
+    return auth_service.register_team_leader(user_create)
 
-router = APIRouter()
+@router.post("/logout")
+async def logout(token: str = Depends(security), auth_service: AuthService = Depends(AuthService)):
+    return auth_service.logout(token.credentials)
 
-@router.post("/register/team-leader", response_model=User)
-def register_team_leader(req: RegisterRequest):
-    if not req.email or not req.password:
-        raise HTTPException(status_code=400, detail="Email and password are required")
-    user = AuthService.register_team_leader(req.email, req.password)
-    # Hapus password dari response
-    if hasattr(user, "dict"):
-        user = user.dict()
-    user.pop("password", None)
-    return user
-
-
-@router.post("/login/team-leader", response_model=LoginResponse)
-def login_team_leader(req: LoginRequest):
-    result = AuthService.login_team_leader(req.unique_team_code, req.password)
-    if not result:
-        raise HTTPException(status_code=401, detail="Invalid team code or password")
-    user = result["user"]
-    if hasattr(user, "dict"):
-        user = user.dict()
-
-    user.pop("password", None)
-    return LoginResponse(
-        user=user,
-        access_token=result["access_token"],
-        refresh_token=result["refresh_token"]
-    )

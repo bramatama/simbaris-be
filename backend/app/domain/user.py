@@ -1,9 +1,19 @@
-from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from uuid import UUID
 
 class User(BaseModel):
-    user_id: Optional[str] = None
-    role: Optional[str] = None
+    user_id: UUID
     email: str
-    password: Optional[str] = None
-    created_at: Optional[str] = None
+    role: str
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
