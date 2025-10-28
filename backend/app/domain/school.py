@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID, uuid4
+from pydantic import BaseModel
 
 @dataclass
 class School:
@@ -25,3 +26,10 @@ class School:
             city=city,
             subdistrict=subdistrict
         )
+
+class SchoolCreate(BaseModel):
+    school_name: str
+    level: str | None = None
+    province: str | None = None
+    city: str | None = None
+    subdistrict: str | None = None
