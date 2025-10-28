@@ -80,6 +80,8 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         
         user_repo = UserRepository()
         user = user_repo.get_user_by_id(user_id)
+
+        print(f"Authenticated user ID: {user}")
         
         if not user:
             raise HTTPException(status_code=404, detail="User not found in database")
