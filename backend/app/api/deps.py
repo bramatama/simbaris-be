@@ -17,7 +17,6 @@ def require_roles(*allowed_roles: Sequence[str]) -> Callable:
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
 
-        # Support current_user as dict (from user repository) or object with attribute `role`
         if isinstance(current_user, dict):
             role = current_user.get("role")
         else:

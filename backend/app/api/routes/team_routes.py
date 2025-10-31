@@ -9,7 +9,7 @@ router = APIRouter(prefix="/teams", tags=["Teams"])
 
 
 @router.get("/", response_model=List[TeamSummary])
-def list_teams(limit: int = 20, current_user=Depends(require_roles("committee", "team_admin"))):
+def list_teams(limit: int = 20, current_user=Depends(require_roles("committee"))):
 	return TeamService.get_teams_summary(limit=limit)
 
 

@@ -38,7 +38,6 @@ async def reset_password_page(
     type: str = None
 ):
 
-    # Tampilkan form reset password
     return templates.TemplateResponse(
         "reset_password.html", 
         {

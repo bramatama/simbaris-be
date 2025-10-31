@@ -12,7 +12,7 @@ class SchoolRepository:
     @staticmethod
     def get_school_by_id(school_id: str):
 
-        response = supabase.table("schools").select("*").eq("id", school_id).execute()
+        response = supabase.table("schools").select("*").eq("school_id", school_id).execute()
         if not response.data:
             return None
         return School(**response.data[0])

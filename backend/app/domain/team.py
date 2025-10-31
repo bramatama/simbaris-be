@@ -13,7 +13,6 @@ class TeamSummary(BaseModel):
 
 
 class TeamDetail(BaseModel):
-    # full detail - flexible shape, keep as Any for nested objects
     team_id: str
     team_name: str
     coach_name: Optional[str] = None
@@ -29,6 +28,19 @@ class TeamDetail(BaseModel):
     members: Optional[List[Any]] = []
     registration: Optional[Any] = None
 
+class LoadRegistration(BaseModel):
+    team_id: str
+    team_name: str
+    coach_name: Optional[str] = None
+    supervisor_name: Optional[str] = None
+    contact: Optional[str] = None
+    team_logo_url: Optional[str] = None
+    raw_photo_url: Optional[str] = None
+    created_by: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    school: Optional[Any] = None
+
 
 class TeamCreate(BaseModel):
     name: str
@@ -39,5 +51,4 @@ class TeamUpdate(BaseModel):
     coach_name: Optional[str] = None
     supervisor_name: Optional[str] = None
     contact: Optional[str] = None
-    # Some clients may send an `email` field for contact; we'll accept it and map to `contact` on update
     email: Optional[str] = None
